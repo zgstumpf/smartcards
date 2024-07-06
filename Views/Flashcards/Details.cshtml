@@ -1,0 +1,55 @@
+﻿@model assignment4.Models.Flashcard
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Flashcard</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Front)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Front)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Back)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Back)
+        </dd>
+        <dt class = "col-sm-2">
+            Flashcard Set
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FlashcardSet.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.UserName)
+        </dd>
+        <dt class = "col-sm-2">
+            Created Date
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            Updated Date
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UpdatedDate)
+        </dd>
+        
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FlashcardId" class="btn btn-dark">Edit</a>
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+</div>

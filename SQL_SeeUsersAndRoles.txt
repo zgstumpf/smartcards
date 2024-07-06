@@ -1,0 +1,11 @@
+﻿-- SQL. Execute this in SQL Server Management Studio
+-- See all users and their roles in a simplified format.
+use smartcards;
+SELECT
+	users.Username as UserName,
+	roles.Name as RoleName,
+	users.Id as userId,
+	userrolepairs.RoleId as roleId
+FROM [dbo].[AspNetUsers] users
+LEFT JOIN [dbo].[AspNetUserRoles] userrolepairs ON users.Id = userrolepairs.UserId
+LEFT JOIN [dbo].[AspNetRoles] roles ON roles.Id = userrolepairs.RoleId;

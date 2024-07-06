@@ -1,0 +1,64 @@
+﻿@model assignment4.Models.SetRatingv3
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>SetRatingv3</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SetRatingId" />
+            <div class="form-group">
+                <label asp-for="RatingUserId" class="control-label"></label>
+                <input asp-for="RatingUserId" class="form-control" />
+                <span asp-validation-for="RatingUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RatingUserName" class="control-label"></label>
+                <input asp-for="RatingUserName" class="form-control" />
+                <span asp-validation-for="RatingUserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RatedSetId" class="control-label"></label>
+                <select asp-for="RatedSetId" class="form-control" asp-items="ViewBag.RatedSetId"></select>
+                <span asp-validation-for="RatedSetId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RatedSetName" class="control-label"></label>
+                <input asp-for="RatedSetName" class="form-control" />
+                <span asp-validation-for="RatedSetName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label"></label>
+                <input asp-for="Comment" class="form-control" />
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RatedDate" class="control-label"></label>
+                <input asp-for="RatedDate" class="form-control" />
+                <span asp-validation-for="RatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

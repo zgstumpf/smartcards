@@ -1,0 +1,48 @@
+﻿@model assignment4.Models.SetRatingv3
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4></h4>
+    <hr />
+    <dl class="row">
+        
+        <dt class = "col-sm-2">
+            Rater UserName
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RatingUserName)
+        </dd>
+        <dt class = "col-sm-2">
+            FlashCard Set
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FlashcardSet.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Rating)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RatedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RatedDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-controller="Reports" asp-action="Index" class="btn btn-dark">Exit</a>
+</div>

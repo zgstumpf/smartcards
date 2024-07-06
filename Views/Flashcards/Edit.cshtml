@@ -1,0 +1,57 @@
+﻿@model assignment4.Models.Flashcard
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Edit";
+    HttpContextAccessor http = new();
+    var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    Console.WriteLine(loggedInUserId);
+}
+
+<h1>Edit</h1>
+
+<h4>Flashcard</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FlashcardId" />
+            <input type="hidden" asp-for="UserId" value="@loggedInUserId"/>
+            <input type="hidden" asp-for="CreatedDate" value="@Model.CreatedDate" />
+            <div class="form-group">
+                <label asp-for="Front" class="control-label"></label>
+                <input asp-for="Front" class="form-control" />
+                <span asp-validation-for="Front" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Back" class="control-label"></label>
+                <input asp-for="Back" class="form-control" />
+                <span asp-validation-for="Back" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SetId" class="control-label">Flashcard Set</label>
+                <select asp-for="SetId" class="form-control" asp-items="ViewBag.SetId"></select>
+                <span asp-validation-for="SetId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group" id="padding-index">
+                <input type="submit" value="Save" class="btn btn-dark" />
+            </div>
+        </form>
+        <div>
+            <a asp-action="Index" class="btn btn-dark">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    #padding-index {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

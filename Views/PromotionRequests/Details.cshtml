@@ -1,0 +1,62 @@
+﻿@model assignment4.Models.PromotionRequest
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Promotion Request</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RequesterUserName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RequesterUserName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RequestedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestDetails)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RequestDetails)
+        </dd>
+        <dt class = "col-sm-2">
+            Was Promotion Granted?
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WasPromotionGranted)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GrantedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GrantedDate)
+        </dd>
+       
+        <dt class = "col-sm-2">
+            Granter Name
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GrantedByName)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if(User.IsInRole("Teacher"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.PromotionRequestId" class="btn btn-dark">Edit</a>
+        <a asp-action="Index" class="btn btn-dark">Back</a>
+    }
+    @if(User.IsInRole("Student"))
+    {
+        <a asp-action="StudentView" class="btn btn-dark">Back</a>
+    }
+</div>

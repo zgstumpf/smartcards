@@ -1,0 +1,43 @@
+﻿@model assignment4.Models.PromotionRequest
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if (User.IsInRole("Student"))
+{
+    <h4>Request to be promoted to Teacher</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="RequestDetails" class="control-label">What do you intend to use SmartCards for if you are granted the role of Teacher? Please provide an email or phone number so a SmartCards team member may determine your eligibility. Your chances of getting accepted may be increased by providing proof of employment at an educational institution, such as a link to an official website where your email is printed.</label>
+                    <textarea asp-for="RequestDetails" class="form-control" style="height:auto; resize:vertical;"></textarea>
+
+                    <span asp-validation-for="RequestDetails" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-dark" id="padding-index"/>
+                </div>
+            </form>
+            <div>
+                <a asp-action="StudentView" class="btn-sm btn-secondary">Exit</a>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<style>
+    #padding-index {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

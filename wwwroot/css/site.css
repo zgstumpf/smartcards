@@ -1,0 +1,52 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+nav {
+  justify-self: center;
+}
+
+nav a {
+  border-bottom: 1px solid black;
+}
+
+nav a:hover{
+  background-color: rgba(213, 216, 216, 0.363);
+}
+
+#nav-identity {
+  justify-self: flex-end;
+}
+
+#nav-identity a {
+  border-bottom: 1px solid black;
+}
+
+#nav-identity a:hover{
+  background-color: rgba(213, 216, 216, 0.363);
+}
+
+#flashcards {
+  table-layout: fixed;
+  width: 60%;
+}
+
+#flashcards th,
+#flashcards td {
+  width: 50%;
+}

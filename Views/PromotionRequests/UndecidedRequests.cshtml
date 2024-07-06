@@ -1,0 +1,94 @@
+﻿@model IEnumerable<assignment4.Models.PromotionRequest>
+
+@{
+    ViewData["Title"] = "Undecided Requests";
+}
+
+<h1>Undecided Promotion Requests</h1>
+
+<table class="table" id="undecided-requests">
+    <thead>
+        <tr>
+            <th>
+                Requested by
+            </th>
+            <th>
+                Requested Date
+            </th>
+            <th>
+                Submission Text
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            <tr class="clickable-row" data-url="@Url.Action("Details", new { id = item.PromotionRequestId })">
+            <td>
+                @Html.DisplayFor(modelItem => item.RequesterUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestDetails)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.PromotionRequestId" class="btn btn-dark btn-sm">Decide</a>
+            </td>
+            <td>
+                <div>
+                    @*@*<a asp-action="Edit" asp-route-id="@item.PromotionRequestId">Decide</a>
+                    <a asp-action="Details" asp-route-id="@item.PromotionRequestId">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.PromotionRequestId">Delete</a>*@
+                        
+
+                        <a asp-action="Delete" asp-route-id="@item.PromotionRequestId" class="btn btn-danger btn-sm">
+                            @*Trashcan icon*@
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                            </svg>
+                        </a>
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index" class="btn btn-dark">Exit</a>
+</div>
+
+<style>
+    .clickable-row:hover {
+        cursor: pointer;
+        background-image: linear-gradient(113.9deg, rgb(255, 128, 0) -4.5%, rgb(255, 215, 0) 98.8%);
+    }
+
+    .btn-sm {
+        text-decoration: none;
+        min-width: 69px;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function (e) {
+                // Prevent click event for actions within the row
+                if (e.target.tagName === 'A') {
+                    return;
+                }
+                const url = this.dataset.url;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>

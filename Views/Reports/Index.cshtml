@@ -1,0 +1,122 @@
+﻿@model IEnumerable<assignment4.Models.Report>
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1>Reports</h1>
+
+<div class="row">
+    <div class="col-md-2">
+        <a asp-action="Create" class="btn btn-sm btn-dark">Start tracking a new set</a>
+    </div>
+    <p class="col-sm-6">
+        Once a report is generated for a set, the report will be updated in live time.
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm" id="report-index-table">
+            <thead>
+                <tr>
+                    <th scope="col">Set Name</th>
+                    <th scope="col">Times Studied</th>
+                    <th scope="col">Average Rating</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-url="@Url.Action("Details", new { id = item.ReportId })">
+                        <td><b>@item.Set.Name</b></td>
+                        <td>@Convert.ToInt32(item.ViewCount?.Count ?? 0)</td>
+                        <td>@Convert.ToInt32(item.AverageRating)</td>
+                        <td><a class="btn btn-sm btn-dark" asp-action="Details" asp-route-id="@item.ReportId">Full Report</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    @{
+        var serializerSettings = new Newtonsoft.Json.JsonSerializerSettings
+        {
+            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+        };
+        // Filter the objects based on their type and property name before serialization
+        var sets = Model.Where(x => x.GetType() == typeof(Report) && ((Report)x).Set != null).Select(x => ((Report)x).Set).ToList();
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(sets, serializerSettings);
+    }
+    
+<div class="d-flex justify-content-center">
+    <div class="w-50 h-50">
+        <h2>Total Sets by Category</h2>
+        <canvas id="categorieschart" width="400" height="400"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js" integrity="sha384-YAshAm4KKjf8V01c4sdNbPYiwU0D0Q82fjMHhKw8VvP0ecY4fxXsZAHxC4r4Ei+T" crossorigin="anonymous"></script>
+
+<script>
+    var sets = @Html.Raw(json);
+    const categories = {};
+    sets.forEach(set => {
+        if (set.Category in categories) {
+            categories[set.Category] += 1;
+        } else {
+            categories[set.Category] = 1;
+        }
+    });
+
+    const uniqueCategories = Object.keys(categories);
+    const categoryCounts = Object.values(categories);
+    const ctx = document.getElementById('categorieschart');
+
+    const data = {
+        labels: uniqueCategories,
+        datasets: [{
+            data: categoryCounts,
+            hoverOffset: 4
+        }]
+    };
+    const config = {
+        type: 'pie',
+        data: data
+    };
+
+    new Chart(ctx, config);
+
+</script>
+
+    <style>
+        .clickable-row:hover {
+            cursor: pointer;
+            background-image: linear-gradient(113.9deg, rgb(255, 128, 0) -4.5%, rgb(255, 215, 0) 98.8%);
+        }
+
+        .btn-sm {
+            text-decoration: none;
+            min-width: 69px;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll('.clickable-row');
+            rows.forEach(row => {
+                row.addEventListener('click', function (e) {
+                    // Prevent click event for actions within the row
+                    if (e.target.tagName === 'A') {
+                        return;
+                    }
+                    const url = this.dataset.url;
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>

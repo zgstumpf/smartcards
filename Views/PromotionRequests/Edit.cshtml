@@ -1,0 +1,83 @@
+﻿@model assignment4.Models.PromotionRequest
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Decide</h1>
+
+<h4>Promotion Request</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PromotionRequestId" />
+            <div class="form-group">
+                <label asp-for="RequesterUserId" class="control-label">Applicant Id</label>
+                <input asp-for="RequesterUserId" class="form-control" readonly="true"/>
+                <span asp-validation-for="RequesterUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RequesterUserName" class="control-label">Applicant UserName</label>
+                <input asp-for="RequesterUserName" class="form-control" readonly="true" />
+                <span asp-validation-for="RequesterUserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RequestedDate" class="control-label">Date Submitted</label>
+                <input asp-for="RequestedDate" class="form-control" readonly="true" />
+                <span asp-validation-for="RequestedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RequestDetails" class="control-label">Submission</label>
+                <textarea asp-for="RequestDetails" class="form-control no-scroll" readonly="true"></textarea>
+
+                @*// Not working properly*@
+                <style>
+                    .no-scroll {
+                        height: auto;
+                        min-height: 100px;
+                        resize: vertical;
+                    }
+                </style>
+
+                <span asp-validation-for="RequestDetails" class="text-danger"></span>
+            </div>
+            
+            <hr />
+            <div class="form-group">
+                <p>Accept or reject?</p>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" asp-for="WasPromotionGranted" value="true" class="form-check-input" /> Accept
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" asp-for="WasPromotionGranted" value="false" class="form-check-input" /> Reject
+                    </label>
+                </div>
+            </div>
+            
+
+            <div class="form-group">
+                <input type="submit" value="Confirm" class="btn btn-dark" id="padding-index"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-sm btn-secondary">Exit</a>
+</div>
+
+<style>
+    #padding-index {
+        margin-bottom: 5px;
+        margin-top: 10px;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

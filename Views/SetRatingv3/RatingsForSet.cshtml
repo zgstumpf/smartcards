@@ -1,0 +1,88 @@
+﻿@model IEnumerable<assignment4.Models.SetRatingv3>
+
+@{
+    ViewData["Title"] = "Ratings";
+}
+@if(Model.Any() == false)
+{
+    <p>There are no ratings for this set.</p>
+}
+else
+{
+    <h1>Ratings and Comments for @Model.FirstOrDefault()?.RatedSetName</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    User
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Rating)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comment)
+                </th>
+                <th>
+                    Date
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+                <tr class="clickable-row" data-url="@Url.Action("Details", new { id = item.SetRatingId })">
+                <td>
+                    @Html.DisplayFor(modelItem => item.RatingUserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Comment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RatedDate)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.SetRatingId" class="btn btn-sm btn-dark">Details</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+}
+    
+<a asp-controller="Reports" asp-action="Index" class="btn btn-dark">Exit</a>
+
+<style>
+    .clickable-row:hover {
+        cursor: pointer;
+        background-image: linear-gradient(113.9deg, rgb(255, 128, 0) -4.5%, rgb(255, 215, 0) 98.8%);
+    }
+
+    .btn-sm {
+        text-decoration: none;
+        min-width: 69px;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function (e) {
+                // Prevent click event for actions within the row
+                if (e.target.tagName === 'A') {
+                    return;
+                }
+                const url = this.dataset.url;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>

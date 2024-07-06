@@ -1,0 +1,46 @@
+﻿@model assignment4.Models.Report
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Report</h4>
+<hr />
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SetId" class="control-label">Set Name</label>
+                <select asp-for="SetId" class="form-control" asp-items="ViewBag.SetId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-dark" id="padding-index"/>
+            </div>
+        </form>
+        <div>
+            <a asp-action="Index" class="btn btn-sm btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    #padding-index {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

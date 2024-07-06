@@ -1,0 +1,180 @@
+@model assignment4.Models.FlashcardSet
+
+@{
+    ViewData["Title"] = "Practice";
+}
+
+<h1 class="text-center">Practice <strong>(Beta)</strong></h1>
+<p class="text-center">In practice mode you can quiz yourself and try to select the correct answer! This beta mode is still in development and is not entirely reliable.</p>
+
+<div>
+    <hr />
+    <div class="text-center">
+        <h2>@Model.Name</h2>
+        <h3 class="lead">
+            @Model.Category</h3>
+            <p>@Model.Description</p>
+    </div>
+</div>
+
+<body>
+    @{
+        var shuffled = Model.RandomCards();
+        var serializerSettings = new Newtonsoft.Json.JsonSerializerSettings
+        {
+            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+        };
+        var flashcardsJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Flashcards, serializerSettings);
+    }
+    <div class="d-flex justify-content-center">
+        <input type="hidden" id="shuffled-list" value="@string.Join(",", shuffled)" />
+        <div class="card" id="@Model.Flashcards[shuffled[0]].FlashcardId">
+            <div class="card-body gap-5">
+                <div id="back" class="">
+                    <h5 class="card-title" id="flashcardFront">@Model.Flashcards[shuffled[0]].Back</h5>
+                </div>
+                <div class="answers">
+                    <div id="choiceOne" class="answer-box btn"></div>
+                    <div id="choiceTwo" class="answer-box btn"></div>
+                    <div id="choiceThree" class="answer-box btn"></div>
+                    <div id="choiceFour" class="answer-box btn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .card {
+            width: 50rem;
+            height: 30rem;
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .card-title,
+        .card-text {
+            text-align: center;
+        }
+
+        .btn {
+            margin-top: 1rem;
+        }
+
+        .frontOrBack {
+            margin-top: 0.5rem;
+            font-size: 16px;
+        }
+        .answers {
+            margin: 20px auto;
+            background-color:#fff;
+            display:grid;
+            grid-template-columns: 200px 200px;
+            grid-column-gap: 50px;
+            grid-row-gap: 50px;
+        }
+        .answer-box {
+            padding:10px;
+            border-radius:10px;
+            border: 2px solid black;
+        }
+    </style>
+
+    <script>
+        var flashcards = @Html.Raw(flashcardsJson);
+        // Retrieve the shuffled list from the hidden input field
+        var shuffled = document.getElementById('shuffled-list').value.split(',').map(Number);
+        var flashcardIndex = shuffled[0];
+
+        function randomizeAnswers(correctIndex) {
+            // Get all answer boxes
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            
+            // Get all choices except for the correct answer
+            const choices = [];
+            flashcards.forEach((e, i) => {
+                if (i !== correctIndex) {
+                choices.push(e.Front);
+                }
+            });
+            
+            // Shuffle the choices array using Fisher-Yates shuffle algorithm
+            for (let i = choices.length - 1; i >= 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [choices[i], choices[j]] = [choices[j], choices[i]];
+            }
+            
+            // Insert the correct answer at a random index
+            const correctAnswer = flashcards[correctIndex].Front;
+            const randomIndex = Math.floor(Math.random() * (answerBoxes.length));
+            choices.splice(randomIndex, 0, correctAnswer);
+
+            // Assign the shuffled choices to each answer box
+            answerBoxes.forEach((answerBox, index) => {
+                answerBox.textContent = choices[index];
+            });
+        }
+
+        function handleEvent(event) {
+            const answerBox = event.target;
+            const selectedAnswer = answerBox.textContent;
+            const cards = document.querySelectorAll('.card');
+            const flashcardID = cards[0].id;
+
+            fetch('/Practice/CheckAnswer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ flashcardID, selectedAnswer })
+            })
+            .then(response => {
+            const reader = response.body.getReader();
+            let result = '';
+            return reader.read().then(function processText({ done, value }) {
+                if (done) {
+                return result;
+                }
+                result += new TextDecoder().decode(value);
+                return reader.read().then(processText);
+            });
+            })
+            .then(responseText => {
+                if(responseText === 'Correct') {
+                    answerBox.style = 'background-color: green;';
+                } else {
+                    answerBox.style = 'background-color: red;';
+                }
+            });
+        }
+
+        function addListeners() {
+            // Get all answer boxes
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach((box) => {
+                box.addEventListener('click', handleEvent)
+            })
+        }
+
+        randomizeAnswers(shuffled[0]); // TODO: Loop through shuffled cards after an answer is selected
+        addListeners();
+    </script>
+
+</body>
+
+<div class="text-center" style="margin-top: 0.5rem;">
+    @if (User.IsInRole("Teacher"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.SetId" class="btn btn-dark">Edit</a>
+    }
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+</div>

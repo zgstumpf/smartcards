@@ -1,0 +1,225 @@
+﻿@model assignment4.Models.FlashcardSet
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Edit";
+    HttpContextAccessor http = new();
+    var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<h1>Edit Set</h1>
+<div>
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+</div>
+<hr />
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="SetId" />
+    <input type="hidden" asp-for="CreatedDate" />
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control bg-dark text-white" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Category" class="control-label">Category:</label>
+                <select asp-for="Category" class="form-control bg-dark text-white">
+                    <option value="">-- Select a category --</option>
+                    <option value="Art">Art</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Business">Business</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="English">English</option>
+                    <option value="History">History</option>
+                    <option value="Math">Math</option>
+                    <option value="Psychology">Psychology</option>
+                    <option value="Science">Science</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control bg-dark text-white" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Needs ASP Action to save information from set -->
+            <button type="submit" value="Save" class="btn btn-dark">Save</button>
+        </div>
+    </div>
+</form>
+
+<body>
+    @if (Model.Flashcards != null)
+    {
+        <div class="row">
+            <div class="col-lg-4">
+                <button id="submit-btn" type="submit" form="set-edit" class="btn btn-dark">Save Flashcards</button>
+            </div>
+            <div id="error-text" class="col-lg-4 text-center d-none">
+                <p class="text-danger">ERROR: One or more blank fields.</p>
+            </div>
+        </div>
+        
+        <form id="set-edit" asp-action="UpdateFlashcard" asp-route-setId="@Model.SetId">
+            <table id="flashcards" class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Front</th>
+                        <th scope="col">Back</th>
+                        <th style="width:20%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Flashcards.Count; i++)
+                    {
+                        var flashcard = Model.Flashcards[i];
+                        <tr>
+                            <input type="hidden" name="flashcards[@i].FlashcardId" value="@flashcard.FlashcardId" />
+                            @if(flashcard.UserId == null)
+                            {
+                                <input type="hidden" name="flashcards[@i].UserId" value="@loggedInUserId" />
+                            }
+                            else
+                            {
+                                <input type="hidden" name="flashcards[@i].UserId" value="@flashcard.UserId" />
+                            }
+                            <input type="hidden" name="flashcards[@i].IsDeleted" value="@flashcard.IsDeleted.ToString()" />
+                            <input type="hidden" name="flashcards[@i].CreatedDate" value="@flashcard.CreatedDate" />
+                            <input type="hidden" name="flashcards[@i].UpdatedDate" value="@flashcard.UpdatedDate" />
+                            <td>
+                                <input id="front" name="flashcards[@i].Front" type="text" value="@flashcard.Front" />
+                            </td>
+                            <td>
+                                <input id="back" name="flashcards[@i].Back" type="text" value="@flashcard.Back" />
+                            </td>
+                            <td>
+                                <button id="remove-flashcard" class="btn btn-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <button id="add-flashcard" class="btn btn-primary">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                </svg>
+                            </button>
+                            <button id="remove-lastflashcard" class="btn btn-primary" style="visibility: hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    }
+</body>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(function defaultState() {
+            // needs implementation to make sure "remove" button only appears when there is a new row
+        })
+
+        $('#submit-btn').click(function () {
+            var isFormValid = true;
+
+            $('table tr').each(function (index) {
+                var row = $(this);
+
+                // Find all input elements in the current row
+                var frontinputs = row.find('#front');
+                var backinputs = row.find('#back');
+                
+                // Loop through each input element in the row
+                frontinputs.each(function (index) {
+                    var input = $(this);
+
+                    // Check if the input is empty
+                    if (input.val() === '') {
+                        isFormValid = false;
+                        $('#error-text').removeClass('d-none')
+                    }
+                });
+                backinputs.each(function (index) {
+                    var input = $(this);
+
+                    // Check if the input is empty
+                    if (input.val() === '') {
+                        isFormValid = false;
+                        $('#error-text').removeClass('d-none')
+                    }
+                });
+            });
+
+            // If the form is not valid, prevent submission
+            if (!isFormValid) {
+                event.preventDefault();
+            }
+        });
+
+        $(function () {
+            $('#add-flashcard').click(function (e) {
+                e.preventDefault();
+                var table = $('table tbody');
+                var rowCount = table.find('tr').length;
+                var template = `<tr>
+                                    <input type="hidden" name="flashcards[${rowCount}].UserId" value="@loggedInUserId" />
+                                    <td>
+                                        <input id="front-${rowCount}" name="flashcards[${rowCount}].Front" type="text" value="" />
+                                    </td>
+                                    <td>
+                                        <input id="back-${rowCount}" name="flashcards[${rowCount}].Back" type="text" value="" />
+                                    </td>
+                                </tr>`;
+                table.append(template);
+                document.getElementById('remove-lastflashcard').style.visibility = 'visible';
+            });
+        });
+
+        $(function () {
+            $('#remove-lastflashcard').click(function (e) {
+                e.preventDefault();
+                var table = $('table tbody');
+                table.find('tr:last').remove();
+            });
+        });
+
+        $('#flashcards').on('click', '#remove-flashcard', function () {
+            // Get the current row
+            var row = $(this).closest('tr');
+
+            // Set the IsDeleted value to true
+            row.find('input[name$=".IsDeleted"]').val('True');
+
+            // Hide the row
+            row.hide();
+
+            // Prevent the form from being submitted and redirecting to the specified URL
+            return false;
+        });
+
+    </script>
+}

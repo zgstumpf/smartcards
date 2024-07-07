@@ -33,26 +33,37 @@ Smart Cards is a C# ASP.NET MVC website that enables students to view flashcard 
 
 At one point, the website and database were hosted by Azure, but for now the project is archived. It currently uses a SQLite server, and the AI functionality doesn't work because that needs a paid API key. But, you can still play around with it and get the general idea.
 
-```sh
-git clone https://github.com/zgstumpf/smartcards.git
-cd smartcards
-dotnet run
-```
-
-You may need to install some dotnet dependencies.
-
-Search https://localhost:7175 in your browser
-
-Make an account on the website (email doesn't need to be real)
-
-By default, new users are students. Other teachers can promote a student to a teacher. Since there are no teachers yet, you have to manually make yourself a teacher to get things started.
-
-Open smartcards-dev.sqlite in a SQLite explorer and get your user id from AspNetUsers table and the id for the teacher role from AspNetRoles table. Then run:
-
-```sql
-insert into AspNetUserRoles
-values
-("your-user-id", "teacher-role-id")
-```
-
-Refresh the website and you should be a teacher.
+1. Download latest .NET 6 SDK from [here](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) - pick the right one for your device
+1. Open the download on your device and follow the instructions
+1.  ```sh
+    git clone https://github.com/zgstumpf/smartcards.git
+    cd smartcards
+    dotnet ef database update
+    dotnet run
+    ```
+1. Search https://localhost:7175 in your browser
+1. Make an account on the website (email doesn't need to be real, make sure to click on the link to verify your email, then log in with your new credentials)
+1. By default, new users are students. Other teachers can promote a student to a teacher. Since there are no teachers yet, you have to manually make yourself a teacher to get things started.
+1. Open **smartcards-dev.sqlite** in a SQLite explorer, such as SQLiteStudio, and run the following SQL:
+    ```sql
+    INSERT INTO AspNetUserRoles
+    VALUES
+    (
+        (
+        -- There is only one user
+        SELECT
+            id
+        FROM
+            AspNetUsers
+        ),
+        (
+        SELECT
+            id
+        FROM
+            AspNetRoles
+        WHERE
+            name = "Teacher"
+        )
+    );
+    ```
+1. Log out and log back in, and you will be a teacher.

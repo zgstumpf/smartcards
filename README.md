@@ -1,4 +1,4 @@
-# SmartCards
+# Smart Cards
 Developers:
 - Sid Elkins
 - Tyler Shipley
